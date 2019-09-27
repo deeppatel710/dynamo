@@ -78,27 +78,29 @@ def get_markets():
 		 and price_volatility in {}
 		 and HIGHLY_COMPETITIVE in {}'''.format(tech_hub, young_professionals, near_forbes_500_company, investor_favorite,  hot_on_roofstock,undervalued_markets, starter_home_price, price_volatility, HIGHLY_COMPETITIVE )
 
-	all_data = {}
+	all_data = []
 	query_pop_growth = '''select * from datascience_db.temp.households'''
 	try:
 		df1 = pd.read_sql(query_all_data, connection, index_col=None)
 		for index, row in df1.iterrows():
-			obj =  {		"market_id": row["market_id"] if row["market_id"] else 'null',
-							"display_name": row['market_name'].upper() if row['market_name'] else row['msaname'].upper(),
-							"expected_cash_flow": row['yield'],
-							"HPA": row['market_growth'],
-							"population_growth": row['population_growth'],
-							"job_growth": row['job_growth'],
-							"income_growth": row['income_growth']
+			obj =  {
+					"cbsa": int(row["cbsacode"]),		
+					"market_id": row["market_id"] if row["market_id"] else 'null',
+					"display_name": row['market_name'].upper() if row['market_name'] else row['msaname'].upper(),
+					"expected_cash_flow": row['yield'],
+					"HPA": row['market_growth'],
+					"population_growth": row['population_growth'],
+					"job_growth": row['job_growth'],
+					"income_growth": row['income_growth']
 					}
 			
-			all_data[int(row['cbsacode'])] = obj
+			all_data.append(obj)
 
 
 	except Exception as e:
 		raise Exception(e)
 
-	return all_data, 200, {'Content-Type': 'application/json; charset=utf-8'}
+	return {"markets": all_data}, 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 
 @app.route('/get-all/', methods=['GET'] )
@@ -118,26 +120,28 @@ def get_all_markets():
 		  ) b
 		on a.cbsacode = b.cbsa_code'''
 		
-	all_data = {}
+	all_data = []
 	try:
 		df1 = pd.read_sql(query_all_data, connection, index_col=None)
 		for index, row in df1.iterrows():
-			obj =  {		"market_id": row["market_id"] if row["market_id"] else 'null',
-							"display_name": row['market_name'].upper() if row['market_name'] else row['msaname'].upper(),
-							"expected_cash_flow": row['yield'],
-							"HPA": row['market_growth'],
-							"population_growth": row['population_growth'],
-							"job_growth": row['job_growth'],
-							"income_growth": row['income_growth']
+			obj =  {
+					"cbsa": int(row["cbsacode"]),
+					"market_id": row["market_id"] if row["market_id"] else 'null',
+					"display_name": row['market_name'].upper() if row['market_name'] else row['msaname'].upper(),
+					"expected_cash_flow": row['yield'],
+					"HPA": row['market_growth'],
+					"population_growth": row['population_growth'],
+					"job_growth": row['job_growth'],
+					"income_growth": row['income_growth']
 					}
 			
-			all_data[int(row['cbsacode'])] = obj
+			all_data.append(obj)
 
 
 	except Exception as e:
 		raise Exception(e)
 
-	return all_data, 200, {'Content-Type': 'application/json; charset=utf-8'}
+	return {"markets": all_data}, 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 
 
