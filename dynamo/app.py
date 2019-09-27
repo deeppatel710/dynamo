@@ -48,9 +48,9 @@ def get_markets():
 		price_volatility = "(true,False)"
 
 	if 'competitiveness' in json_req:
-		competitiveness = "(" + json_req['competitiveness'] + ")"
+		HIGHLY_COMPETITIVE = "(" + json_req['competitiveness'] + ")"
 	else:
-		competitiveness = "(True,False)"
+		HIGHLY_COMPETITIVE = "(True,False)"
 
 
 
@@ -76,7 +76,7 @@ def get_markets():
 		 and undervalued_markets = {}
 		 and starter_home_price in {}
 		 and price_volatility in {}
-		 and competitiveness in {}'''.format(tech_hub, young_professionals, near_forbes_500_company, investor_favorite,  hot_on_roofstock,undervalued_markets, starter_home_price, price_volatility, competitiveness )
+		 and HIGHLY_COMPETITIVE in {}'''.format(tech_hub, young_professionals, near_forbes_500_company, investor_favorite,  hot_on_roofstock,undervalued_markets, starter_home_price, price_volatility, HIGHLY_COMPETITIVE )
 
 	all_data = {}
 	query_pop_growth = '''select * from datascience_db.temp.households'''
