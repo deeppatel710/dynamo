@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from snowflake.sqlalchemy import URL
 import pandas as pd
 import json
+import numpy as np
 
 
 SF_USER='dpatel'
@@ -22,9 +23,12 @@ app.config["DEBUG"] = True
 
 @app.route('/get-markets/', methods=['POST'] )
 def get_markets():
-	json_req = request.get_json()
+	json_req = json.loads(request.get_json())
 
-	market_types = json_req['market_type']
+	market_type = json_req['market_type']
+
+
+	market_types = np.array(market_type)
 
 	tech_hub = "(True)" if 0 in market_types else '(true, False)'
 	young_professionals = True
@@ -35,11 +39,11 @@ def get_markets():
 
 	starter_home_price = None 
 
-	if json_req['price_bucket'] == [0,1]:
+	if json_req['price_bucket'] == "[0,1]":
 		starter_home_price = '(0,1)'
-	elif json_req['price_bucket'] == [0]:
+	elif json_req['price_bucket'] == "[0]":
 		starter_home_price = '(0)'
-	elif json_req['price_bucket'] == [1]:
+	elif json_req['price_bucket'] == "[1]":
 		starter_home_price = '(1)'
 
 	if 'price_volatility' in json_req:
@@ -144,6 +148,10 @@ def get_all_markets():
 	return {"markets": all_data}, 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 
+
+@app.route('/', methods=['GET'] )
+def homepage():
+	return render_template('dynamo.html')
 
 
 
